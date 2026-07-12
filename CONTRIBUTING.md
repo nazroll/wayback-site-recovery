@@ -43,7 +43,9 @@ cp scripts/coverage_report.py stage/wayback-site-recovery/scripts/
 cd stage && zip -r ../dist/wayback-site-recovery.skill wayback-site-recovery
 ```
 
-Releases are built automatically by CI when a `v*` tag is pushed.
+## How releases work
+
+Every release starts as a **draft release written by the maintainer**: title, tag name, and release notes. Nobody else (including CI and coding agents) writes or creates releases. Publishing the draft creates the `v*` tag, which triggers CI to run the test suite, build `wayback-site-recovery.skill`, and attach it to the release. If a bare tag is pushed without a maintainer-written release behind it, the workflow fails on purpose.
 
 ## Code of conduct
 
