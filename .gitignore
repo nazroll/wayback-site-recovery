@@ -1,0 +1,18 @@
+# Recovery working data (never commit recovered site content)
+/recovery/
+*.zip
+
+# Build artifacts
+/dist/
+*.skill
+
+# Python
+__pycache__/
+*.pyc
+
+# Private notes / planning docs
+/docs/
+
+# OS / tooling
+.DS_Store
+.claude/

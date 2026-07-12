@@ -1,0 +1,32 @@
+name: Release skill package
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Run test suite
+        run: python -m unittest discover -s tests -v
+      - name: Build .skill package
+        run: |
+          mkdir -p stage/wayback-site-recovery/references stage/wayback-site-recovery/scripts
+          cp SKILL.md README.md stage/wayback-site-recovery/
+          cp references/pywaybackup-cli.md stage/wayback-site-recovery/references/
+          cp scripts/coverage_report.py stage/wayback-site-recovery/scripts/
+          cd stage && zip -r ../wayback-site-recovery.skill wayback-site-recovery
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" wayback-site-recovery.skill \
+            --title "$GITHUB_REF_NAME" --generate-notes

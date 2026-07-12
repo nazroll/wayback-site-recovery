@@ -1,0 +1,23 @@
+name: Idea / improvement
+description: Propose a playbook improvement, a new failure mode to document, or a new capability.
+labels: [idea]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What did you hit (or foresee) that the skill doesn't handle well today? Describe the problem before the solution.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change (optional)
+      description: If you have a solution in mind, such as a SKILL.md instruction change, a script feature, or a new reference doc.
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This keeps request pacing polite to archive.org (no rate-limit evasion or aggressive parallelism)
+          required: true

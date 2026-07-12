@@ -1,0 +1,36 @@
+name: Recovery failure / bug
+description: A recovery went wrong, the audit script misbehaved, or the playbook gave your agent bad instructions.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Real-world failure reports are the most valuable contribution to this project. Thanks!
+        Note: archive.org throttling (HTTP 429, long stalls) is normal and usually not a bug; re-running resumes the download.
+  - type: input
+    id: domain
+    attributes:
+      label: Domain being recovered
+      description: If shareable. "A 2000s WordPress blog, can't share the domain" is fine too.
+      placeholder: example.com (2004–2013)
+  - type: textarea
+    id: command
+    attributes:
+      label: What was run
+      description: The exact command or the prompt you gave your agent.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: What you expected vs. what happened
+      description: Include error output or the relevant part of the coverage report if you have it.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Agent + OS + Python version, and pywaybackup version if relevant.
+      placeholder: Claude Code on macOS 15, Python 3.13, pywaybackup 4.1.6
