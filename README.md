@@ -115,6 +115,8 @@ This scans every HTML and CSS file in the folder and reports missing internal as
 
 Recovers **publicly archived** content only, with conservative request pacing, because the Internet Archive is a donation-funded nonprofit ([donate](https://archive.org/donate)). No access-control bypasses; no claim that inferred content is original. If you republish a site you don't own, copyright responsibility is yours.
 
+**If you republish, follow these norms:** preserve creator and site credits, bylines, and source attribution from the recovered material, and keep its publication context intact. Recovered third-party assets (images from photo hosts, CDNs, other people's servers) remain their owners' property, so withhold or replace them when the rights are unclear. And if a rights holder objects to something you have republished, honor the takedown. These norms are adapted from [wayback-restorer's legal notes](https://github.com/obra/wayback-restorer/blob/main/docs/legal-notes.md).
+
 **A note on fidelity:** the archive captures files at different times, so a rebuilt site can mix eras. You might get a 2013 page styled by a 2007 stylesheet. The skill sets this expectation up front and narrows the date range if you want the site as it looked at a specific moment.
 
 > [!TIP]
