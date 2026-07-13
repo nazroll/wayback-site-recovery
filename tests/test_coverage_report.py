@@ -12,7 +12,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPT = Path(__file__).resolve().parent.parent / "scripts" / "coverage_report.py"
+SCRIPT = Path(__file__).resolve().parent.parent / "skills" / "wayback-site-recovery" / "scripts" / "coverage_report.py"
 WB = "https://web.archive.org/web/2010id_/"
 
 

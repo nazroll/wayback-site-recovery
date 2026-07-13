@@ -102,16 +102,16 @@ Just ask naturally:
 
 ## What's inside
 
-* [SKILL.md](SKILL.md): The four-phase recovery playbook.
-* [references/pywaybackup-cli.md](references/pywaybackup-cli.md): Verified CLI flags + CDX API reference.
-* [scripts/coverage_report.py](scripts/coverage_report.py): Stdlib-only asset coverage auditor script.
+* [SKILL.md](skills/wayback-site-recovery/SKILL.md): The four-phase recovery playbook.
+* [references/pywaybackup-cli.md](skills/wayback-site-recovery/references/pywaybackup-cli.md): Verified CLI flags + CDX API reference.
+* [scripts/coverage_report.py](skills/wayback-site-recovery/scripts/coverage_report.py): Stdlib-only asset coverage auditor script.
 
 ### Running the Coverage Audit Standalone
 
 If you want to manually run the auditor script on any existing recovery directory, use the following:
 
 ```bash
-python scripts/coverage_report.py ./site-archive --domain example.com
+python skills/wayback-site-recovery/scripts/coverage_report.py ./site-archive --domain example.com
 ```
 
 This scans every HTML and CSS file in the folder and reports missing internal assets, external hosting references, and unresolved Wayback URLs. The JSON report is written to `SITE_DIR/coverage_report.json` (override with `--json`); missing-asset paths are root-relative and each carries a ready-made Wayback recovery URL.

@@ -25,9 +25,9 @@ jobs:
       - name: Build .skill package
         run: |
           mkdir -p stage/wayback-site-recovery/references stage/wayback-site-recovery/scripts
-          cp SKILL.md README.md stage/wayback-site-recovery/
-          cp references/pywaybackup-cli.md stage/wayback-site-recovery/references/
-          cp scripts/coverage_report.py stage/wayback-site-recovery/scripts/
+          cp skills/wayback-site-recovery/SKILL.md README.md stage/wayback-site-recovery/
+          cp skills/wayback-site-recovery/references/pywaybackup-cli.md stage/wayback-site-recovery/references/
+          cp skills/wayback-site-recovery/scripts/coverage_report.py stage/wayback-site-recovery/scripts/
           cd stage && zip -r ../wayback-site-recovery.skill wayback-site-recovery
       - name: Attach package to the maintainer-written release
         env:
