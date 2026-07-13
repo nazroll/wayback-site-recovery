@@ -26,9 +26,14 @@ The tools already exist, but this skill is focused on *orchestration*. This is a
 
 **Requirements:** an AI agent that supports Agent Skills. For local recoveries you'll also need Python 3.10+ on the machine doing the work. The agent installs the downloader (`pywaybackup`) itself when needed.
 
-### Not a developer? Use Claude.ai
+### Not a developer? Use Claude.ai (Limitations Apply)
 
-Download the packaged `.skill` file from the [latest release](https://github.com/nazroll/wayback-site-recovery/releases/latest) and upload it via **Settings → Capabilities → Skills**. No terminal required. This path is best for inventory checks, audits, and smaller recoveries. For large, multi-hour bulk downloads, run a local agent (like Claude Code) on your own machine.
+Download the packaged `.skill` file from the [latest release](https://github.com/nazroll/wayback-site-recovery/releases/latest) and upload it via **Settings → Customize → Skills** (direct link: [claude.ai/new#settings/customize-skills](https://claude.ai/new#settings/customize-skills)).
+
+> [!WARNING]
+> **Tool Blockages on Web/Desktop:** The Claude.ai web and macOS desktop apps currently restrict external web requests to `web.archive.org` via their built-in tools (such as `web-fetch`), which will prevent the skill from functioning in those environments. 
+> 
+> This skill works flawlessly in the terminal-based **Claude Code** (`claude`) and other local agents with full network and shell capabilities.
 
 ### Recommended: one command for any agent ([skills.sh](https://skills.sh))
 
