@@ -82,6 +82,7 @@ Critical facts (all verified against v4.1.6; do not guess these):
 Work on a copy; keep the raw download pristine.
 
 1. **Strip Wayback artifacts.** Check downloaded HTML for injected toolbar markup, `<script src=".../static/js/wombat.js">`-style includes, and rewritten `https://web.archive.org/web/TIMESTAMP/...` URLs. pywaybackup downloads originals via the `id_` URL modifier so files are usually clean, but verify; mixed captures happen.
+   - **Preserve publication context:** When cleaning Wayback artifacts, do **not** strip author bylines, credit lines, footer attributions, or "originally published at" markers from the rebuilt HTML pages. Keeping these intact is essential for honoring republishing norms and attribution.
 2. **Rewrite internal links** to relative local paths so the site browses offline. Map `http(s)://(www.)?DOMAIN/path` → relative `path`, handling query-string URLs (`?p=123`) by mapping them to the on-disk names the downloader produced. This step is **mandatory for query-string sites** (old WordPress/forum permalinks): a static file server cannot resolve `?p=123` to a file, so every unrewritten query-string link 404s offline even though the page was downloaded. If any remain, tell the user which links won't work and why.
 3. **Asset coverage audit.** Run the bundled script:
 
@@ -91,13 +92,17 @@ Work on a copy; keep the raw download pristine.
 
    It parses every HTML file (`img/script/link/a`, `srcset`, inline-CSS `url()`) **and every standalone `.css` file** (`url()` and `@import`), reporting: internal assets present, internal assets missing (as root-relative paths resolved against the referencing page, with Wayback recovery URLs generated using the optional `--timestamp`), and external-domain assets (Photobucket, ImageShack, Blogger, Flickr, all extremely common for 2004–2013 blogs). It probes both `SITE_DIR/path` and `SITE_DIR/DOMAIN/path` layouts. The JSON report is written to `SITE_DIR/coverage_report.json` (override with `--json`). Review it with the user.
 4. **Recover missing assets: try the original URL first, then Wayback.** CDN-hosted images (Cloudinary, Contentful, Imgur, Blogger's googleusercontent, Flickr staticflickr) often outlive the sites that embedded them; a plain GET on the original URL frequently still works even when the site is long dead. For each missing or external asset: (a) try the original URL live; (b) on failure, fetch `https://web.archive.org/web/TIMESTAMPid_/ASSET_URL` (the `id_` modifier returns the clean original; pick a timestamp near the referencing page's capture). Respect ~1 req/sec pacing on archive.org. Update the HTML references for anything recovered; note permanent losses in the final report. (Truly dead hosts like Photobucket/ImageShack usually only survive via Wayback, if at all.)
+   - **Track third-party assets:** Maintain a list of all recovered assets that originated from external hosts or third-party domains (e.g. other people's photo hosting, CDN domains). You will need to explicitly note these in the final report to help the user make an informed withhold or replace decision.
 5. **Optional Markdown extraction** (content-rescue goal): parse each post's HTML, extract title/date/body (era-typical platforms: WordPress, Blogger, Movable Type; look for `<div class="post">`, `<div class="entry">`, `h2/h3.post-title` patterns), and emit one `.md` file per post with front-matter.
+   - **Enforce attribution norms:** Ensure that:
+     - The front-matter carries the `author` and the `original_url` (the original live URL of the post), not just the `title` and `date`.
+     - Creator/site credits, original bylines, and publishing context in the body are kept completely intact during the extraction from HTML to Markdown.
 
 ## Phase 4: Verify and report
 
 - Open a sample of pages (serve locally: `python -m http.server`) or parse them to confirm: no `web.archive.org` URLs remain, images resolve, internal navigation works. Test query-string links (`?p=123`) specifically, since they are the ones that break under a static server if Phase 3 link rewriting missed them.
 - Re-run `coverage_report.py` to confirm the missing-asset count dropped.
-- Deliver a short report: pages recovered, date coverage, assets recovered vs. permanently lost, and anything only available in older captures.
+- Deliver a short report: pages recovered, date coverage, assets recovered vs. permanently lost, anything only available in older captures, and a dedicated list of recovered third-party assets that came from other people's hosts or external domains (to help the user make an informed withhold/replace decision before republishing).
 
 ## Failure modes to anticipate
 
