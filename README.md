@@ -41,52 +41,38 @@ Download the packaged `.skill` file from the [latest release](https://github.com
 npx skills add nazroll/wayback-site-recovery
 ```
 
-The CLI detects your installed agents (Claude Code, Cursor, Codex, Copilot, Gemini CLI, OpenCode, and more) and lets you pick where to install. Add `-g` for a global install or `-a claude-code` to target a specific agent. Prefer manual setup? Use the clone commands below.
+The CLI detects your installed agents (Claude Code, Cursor, Codex, Copilot, Gemini CLI, OpenCode, and more) and lets you pick where to install. Add `-g` for a global install or `-a claude-code` to target a specific agent. Prefer manual setup? Use the steps below.
 
-### Global Scope (System Level)
+### Manual install (clone and copy)
 
-**Claude Code:**
+The skill lives in `skills/wayback-site-recovery/` inside this repo, so don't clone the repo directly into your agent's skills directory. Clone it anywhere, then copy the skill folder into place. For Claude Code:
+
 ```bash
+git clone https://github.com/nazroll/wayback-site-recovery /tmp/wayback-site-recovery
 mkdir -p ~/.claude/skills
-git clone https://github.com/nazroll/wayback-site-recovery ~/.claude/skills/wayback-site-recovery
+cp -r /tmp/wayback-site-recovery/skills/wayback-site-recovery ~/.claude/skills/
 ```
 
-**Antigravity / Antigravity CLI:**
-```bash
-mkdir -p ~/.gemini/config/skills
-git clone https://github.com/nazroll/wayback-site-recovery ~/.gemini/config/skills/wayback-site-recovery
-```
+For other agents, copy into their global skills directory instead:
 
-**Codex:**
-```bash
-mkdir -p ~/.codex/skills
-git clone https://github.com/nazroll/wayback-site-recovery ~/.codex/skills/wayback-site-recovery
-```
+| Agent | Global skills directory |
+|---|---|
+| Claude Code | `~/.claude/skills/` |
+| Antigravity / Antigravity CLI | `~/.gemini/config/skills/` |
+| Codex | `~/.agents/skills/` |
+| OpenCode | `~/.opencode/skills/` |
 
-**OpenCode:**
-```bash
-mkdir -p ~/.opencode/skills
-git clone https://github.com/nazroll/wayback-site-recovery ~/.opencode/skills/wayback-site-recovery
-```
-
-*Note: Restart your agent client after cloning; the skill triggers automatically on Wayback/site-recovery requests.*
+*Note: Restart your agent client after copying; the skill triggers automatically on Wayback/site-recovery requests.*
 
 ### Project Scope (Workspace Level)
 
-To make the skill available only inside one project, clone it into that agent's project-level skills directory. For Claude Code:
-
-```bash
-mkdir -p .claude/skills
-git clone https://github.com/nazroll/wayback-site-recovery .claude/skills/wayback-site-recovery
-```
-
-Other agents follow the same pattern with their own directory (e.g. `.agents/skills/` for agents that adopt the [cross-agent Agent Skills convention](https://agentskills.io)). Check your agent's docs for the exact path.
+To make the skill available only inside one project, copy the skill folder into that agent's project-level skills directory instead: `.claude/skills/` for Claude Code, or `.agents/skills/` for agents that adopt the [cross-agent Agent Skills convention](https://agentskills.io), which Codex and Antigravity both read. Check your agent's docs for the exact path.
 
 ## What the agent does with this skill
 
 1. **Inventory first:** Queries the CDX API (incorporating subdomain/`www.` variants, pagination, and deduplication) to act as a quick pre-download audit. This shows the user exactly what is archived *before* committing to a multi-hour download, and the agent quotes a download-time estimate and asks for confirmation before starting a long one.
 2. **Bulk download done right:** Drives [pywaybackup](https://github.com/bitdruid/python-wayback-machine-downloader) or [wayback-restorer](https://github.com/obra/wayback-restorer) with verified CLI flags, resume-after-interruption, `id_`-mode clean originals, and polite ~1 req/sec pacing.
-3. **Asset coverage audit:** Runs the bundled [scripts/coverage_report.py](scripts/coverage_report.py) to find every missing image, script, and stylesheet, including assets referenced from CSS and `srcset`, and maps each one to a ready-made recovery URL. It also flags externally hosted assets (Photobucket, Blogger, CDNs) and leftover `web.archive.org` links.
+3. **Asset coverage audit:** Runs the bundled [scripts/coverage_report.py](skills/wayback-site-recovery/scripts/coverage_report.py) to find every missing image, script, and stylesheet, including assets referenced from CSS and `srcset`, and maps each one to a ready-made recovery URL. It also flags externally hosted assets (Photobucket, Blogger, CDNs) and leftover `web.archive.org` links.
 4. **Smart asset recovery:** Tries the original CDN URL first (CDN images often outlive their sites), falling back to Wayback. If you need strict archival provenance, just tell the agent to recover from Wayback captures only, since a live CDN URL can serve content that changed after the site died.
 5. **Rebuild:** Rewrites internal links to relative paths for a fully offline-browsable static site, or extracts posts to Markdown with front-matter for migration.
 6. **Honest reporting:** Lists what was recovered, what is only available in older captures, and what is permanently lost.
@@ -102,16 +88,16 @@ Just ask naturally:
 
 ## What's inside
 
-* [SKILL.md](SKILL.md): The four-phase recovery playbook.
-* [references/pywaybackup-cli.md](references/pywaybackup-cli.md): Verified CLI flags + CDX API reference.
-* [scripts/coverage_report.py](scripts/coverage_report.py): Stdlib-only asset coverage auditor script.
+* [SKILL.md](skills/wayback-site-recovery/SKILL.md): The four-phase recovery playbook.
+* [references/pywaybackup-cli.md](skills/wayback-site-recovery/references/pywaybackup-cli.md): Verified CLI flags + CDX API reference.
+* [scripts/coverage_report.py](skills/wayback-site-recovery/scripts/coverage_report.py): Stdlib-only asset coverage auditor script.
 
 ### Running the Coverage Audit Standalone
 
 If you want to manually run the auditor script on any existing recovery directory, use the following:
 
 ```bash
-python scripts/coverage_report.py ./site-archive --domain example.com
+python skills/wayback-site-recovery/scripts/coverage_report.py ./site-archive --domain example.com
 ```
 
 This scans every HTML and CSS file in the folder and reports missing internal assets, external hosting references, and unresolved Wayback URLs. The JSON report is written to `SITE_DIR/coverage_report.json` (override with `--json`); missing-asset paths are root-relative and each carries a ready-made Wayback recovery URL.
