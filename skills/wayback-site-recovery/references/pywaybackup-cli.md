@@ -77,3 +77,42 @@ https://web.archive.org/cdx/search/cdx?url=DOMAIN*&output=json
 - Fields: urlkey, timestamp, original, mimetype, statuscode, digest, length.
 - Large sites: `&showNumPages=true`, then iterate `&page=N`.
 - Clean-original fetch of any capture: `https://web.archive.org/web/{timestamp}id_/{original}`; the `id_` modifier strips the Wayback toolbar and URL rewriting.
+
+## Wayback Availability API (for single-URL checks)
+
+Use the Availability API to quickly verify if a single URL is archived and retrieve its closest snapshot in a single lightweight request.
+
+```
+https://archive.org/wayback/available?url=URL[&timestamp=YYYYMMDD]
+```
+
+- **url** (required): The exact URL to query.
+- **timestamp** (optional): Target timestamp (e.g., `20101120`). Returns the capture closest to this date.
+
+**When to prefer:**
+- **Use it** for single-URL existence checks or when recovering a single page/asset. It is fast, cheap, and doesn't flood logs with history.
+- **Do not use it** for whole-site inventory or directory discovery (it only returns a single closest snapshot for the exact URL; use the CDX API instead).
+
+Example response (archived):
+```json
+{
+  "url": "example.com",
+  "archived_snapshots": {
+    "closest": {
+      "status": "200",
+      "available": true,
+      "url": "http://web.archive.org/web/20101121035834/http://www.example.com/",
+      "timestamp": "20101121035834"
+    }
+  }
+}
+```
+
+Example response (not archived):
+```json
+{
+  "url": "thisdoesnotexistatall1234567890.com",
+  "archived_snapshots": {}
+}
+```
+
