@@ -6,14 +6,14 @@ Thanks for your interest in improving wayback-site-recovery! This is a small, si
 
 - **Report a recovery failure.** The most valuable contribution. Real-world sites break the playbook in ways tests can't predict. Open an issue with the domain (if shareable), date range, exact command, and error output.
 - **Improve the playbook (SKILL.md).** Better phase instructions, new failure modes you hit, smarter post-processing steps. This is the core of the project.
-- **Fix or extend the audit script.** `scripts/coverage_report.py`: bug fixes, or new asset-reference patterns it should detect.
+- **Fix or extend the audit script.** `skills/wayback-site-recovery/scripts/coverage_report.py`: bug fixes, or new asset-reference patterns it should detect.
 - **Share an idea.** Not sure it fits? Open an issue with the `idea` template and describe the problem before proposing a solution.
 - **Improve docs.** README clarity, install steps for agents not yet covered, typos. All welcome as direct PRs.
 
 ## Ground rules
 
 - **SKILL.md is the product.** Keep instructions accurate and verified: every CLI flag or API parameter mentioned must be checked against the current tool version, not guessed. Say in your PR how you verified it and against which version.
-- **`scripts/coverage_report.py` stays stdlib-only.** No third-party dependencies; it must run anywhere Python 3.10+ runs.
+- **The audit script stays stdlib-only.** No third-party dependencies; it must run anywhere Python 3.10+ runs.
 - **Respect the Internet Archive.** Conservative request pacing is a project value, not a limitation. Contributions that add rate-limit evasion, proxy rotation, or aggressive parallelism will be declined.
 - Recovery of publicly archived content only; nothing that bypasses access controls.
 
@@ -21,7 +21,7 @@ Thanks for your interest in improving wayback-site-recovery! This is a small, si
 
 - **Small fixes** (typos, broken links, obvious script bugs): open a PR directly.
 - **Anything larger** (new playbook phases, new scripts, behavior changes): open an issue first so we can agree on the approach before you invest time.
-- Add or update tests when touching `scripts/`; run the suite before pushing:
+- Add or update tests when touching the skill's `scripts/`; run the suite before pushing:
 
   ```bash
   python -m unittest discover -s tests -v
@@ -37,9 +37,9 @@ This project has one maintainer ([@nazroll](https://github.com/nazroll)), who re
 
 ```bash
 mkdir -p stage/wayback-site-recovery/references stage/wayback-site-recovery/scripts
-cp SKILL.md README.md stage/wayback-site-recovery/
-cp references/pywaybackup-cli.md stage/wayback-site-recovery/references/
-cp scripts/coverage_report.py stage/wayback-site-recovery/scripts/
+cp skills/wayback-site-recovery/SKILL.md README.md stage/wayback-site-recovery/
+cp skills/wayback-site-recovery/references/pywaybackup-cli.md stage/wayback-site-recovery/references/
+cp skills/wayback-site-recovery/scripts/coverage_report.py stage/wayback-site-recovery/scripts/
 cd stage && zip -r ../dist/wayback-site-recovery.skill wayback-site-recovery
 ```
 
