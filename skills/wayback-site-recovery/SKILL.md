@@ -9,6 +9,25 @@ Recover a website from the Internet Archive's Wayback Machine and rebuild it as 
 
 The workflow has four phases: **Inventory → Download → Post-process → Verify.** Never skip the inventory: it prevents multi-hour downloads that turn out to be missing half the site.
 
+## Fast Path: Single-Page / Single-Asset Recovery
+
+If the user request is limited to a single URL (e.g., recovering one specific page), recovering assets/images for a single page, or a quick "is this archived?" check, use this fast path instead of the full pipeline:
+
+1. **Quick Existence Check (Availability API):** Instead of a full CDX query, check the URL's archival status using the Availability API:
+   ```
+   https://archive.org/wayback/available?url=TARGET_URL
+   ```
+   Optionally pass a `timestamp=YYYYMMDD` parameter to target a specific era.
+2. **Direct Capture Download:** Retrieve the clean page source directly using the `id_` modifier (no bulk downloader tooling is needed):
+   ```
+   https://web.archive.org/web/{timestamp}id_/{target_url}
+   ```
+3. **Single-Page Asset Recovery:** Parse the HTML for references to images, stylesheets, or scripts. For each asset, extract and download it using the standard CDN-first, Wayback-fallback order:
+   - Try the original URL live first.
+   - If that fails, fetch from Wayback: `https://web.archive.org/web/{timestamp}id_/{asset_url}`
+   - Update the HTML references to point to these local assets. Keep request pacing polite (~1 req/sec).
+4. **Escalation Criteria:** Escalate to the full Phase 0–4 pipeline if the user's goal expands to multiple pages, whole subdirectories, or the entire website.
+
 ## Phase 0: Establish scope with the user
 
 Before running anything, confirm:
